@@ -27,4 +27,5 @@ CREATE TABLE `amirtours`.`followers` (
   `userId` INT NOT NULL,
   PRIMARY KEY (`id`));
 
-
+ALTER TABLE `amirtours`.`followers` 
+ADD UNIQUE INDEX `uniqueFollower` (`vacationId` ASC, `userId` ASC);
