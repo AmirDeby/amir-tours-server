@@ -1,6 +1,7 @@
 const db = require('../sql');
 const router = require('express').Router();
-const { getVacations, followVacation, unfollowVacation } = require('../queries');
+const Joi = require('@hapi/joi');
+const { getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
 
 router.get('/', async (req, res) => {
 
@@ -9,11 +10,39 @@ router.get('/', async (req, res) => {
     res.send(vacations);
 });
 
+router.get('/me', async (req, res) => {
+    const { userId } = req.user;
 
+    const [vacations] = await db.execute(getVacations());
+    const [followedVacationPairs] = await db.execute(getFollowedVacationIds(), [userId]);
+    const followedVacationIds = followedVacationPairs.map(pair => pair.vacationId);
+
+    const vacationsWithFollowFlag = vacations.map(vacation => {
+        const isFollowed = followedVacationIds.includes(vacation.id);
+        return {
+            ...vacation,
+            isFollowed,
+        };
+    })
+    res.send(vacationsWithFollowFlag)
+
+});
 
 router.post('/:vacationId/follow', async (req, res) => {
     const { userId } = req.body;
     const { vacationId } = req.params;
+
+
+    const vacationSchema = Joi.object({
+        userId: Joi.number().required(),
+        vacationId: Joi.number().required()
+    })
+
+    const validation = vacationSchema.validate({ userId, vacationId });
+    if (validation.error) {
+        res.status(401).send(validation.error);
+        return
+    }
 
     try {
         await db.execute(followVacation(), [userId, vacationId])
