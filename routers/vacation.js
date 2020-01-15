@@ -12,10 +12,13 @@ router.get('/', async (req, res) => {
 
 router.get('/me', async (req, res) => {
     const { userId } = req.user;
+    console.log(userId);
+    
 
     const [vacations] = await db.execute(getVacations());
     const [followedVacationPairs] = await db.execute(getFollowedVacationIds(), [userId]);
     const followedVacationIds = followedVacationPairs.map(pair => pair.vacationId);
+    
 
     const vacationsWithFollowFlag = vacations.map(vacation => {
         const isFollowed = followedVacationIds.includes(vacation.id);
@@ -24,6 +27,8 @@ router.get('/me', async (req, res) => {
             isFollowed,
         };
     })
+    
+    
     res.send(vacationsWithFollowFlag)
 
 });
