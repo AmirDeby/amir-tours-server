@@ -24,4 +24,8 @@ function login() {
     return " SELECT * FROM amirtours.users WHERE userName=? and password= ?" 
 }
 
-module.exports = { getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }
+function addVacation() {
+    return "INSERT INTO `amirtours`.`vacations` (`description`, `destination`, `image`, `startDate`, `endDate`, `price`) VALUES (?,?,?,?,?,?)"
+}
+
+module.exports = { addVacation, getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }

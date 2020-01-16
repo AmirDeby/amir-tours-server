@@ -3,20 +3,13 @@ const router = require('express').Router();
 const { registration, checkIfUserExists, login } = require('../queries');
 const jwt = require('jsonwebtoken');
 const Joi = require('@hapi/joi');
+const loginValidation = require('../validation/loginValidation');
+const registerValidation = require('../validation/registerValidation');
 
-router.post('/login', async (req, res) => {
+
+router.post('/login', loginValidation, async (req, res) => {
+    
     const { userName, password } = req.body;
-
-    const loginSchema = Joi.object({
-        userName: Joi.string().required(),
-        password: Joi.string().required()
-    })
-
-    const validation = loginSchema.validate({ userName, password });
-    if (validation.error) {
-        res.status(400).send(validation.error);
-        return
-    }
 
     const [result] = await db.execute(login(), [userName, password]);
 
@@ -31,22 +24,9 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', registerValidation, async (req, res) => {
     const { userName, firstName, lastName, password } = req.body;
     console.log(req.body);
-
-    const userSchema = Joi.object({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        password: Joi.string().min(3).max(15).required(),
-        userName: Joi.string().min(2).max(15).required(),
-    });
-
-    const validation = userSchema.validate({ firstName, lastName, password, userName });
-    if (validation.error) {
-        res.status(400).send(validation.error);
-        return
-    }
 
     const [result] = await db.execute(checkIfUserExists(), [userName]);
     const [userExist] = result;
