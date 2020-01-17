@@ -6,9 +6,8 @@ const Joi = require('@hapi/joi');
 const loginValidation = require('../validation/loginValidation');
 const registerValidation = require('../validation/registerValidation');
 
-
 router.post('/login', loginValidation, async (req, res) => {
-    
+
     const { userName, password } = req.body;
 
     const [result] = await db.execute(login(), [userName, password]);
@@ -20,13 +19,13 @@ router.post('/login', loginValidation, async (req, res) => {
         return;
     }
 
-    createAndReturnToken(user.userName, user.id, res);
+    createAndReturnToken(user.userName, user.id, user.isAdmin ,res);
 });
 
 
 router.post('/register', registerValidation, async (req, res) => {
+
     const { userName, firstName, lastName, password } = req.body;
-    console.log(req.body);
 
     const [result] = await db.execute(checkIfUserExists(), [userName]);
     const [userExist] = result;
@@ -37,11 +36,11 @@ router.post('/register', registerValidation, async (req, res) => {
 
     const [response] = await db.execute(registration(), [firstName, lastName, password, userName]);
     const userId = response.insertId;
-    createAndReturnToken(userName, userId, res);
+    createAndReturnToken(userName, userId, false, res);
 });
 
-function createAndReturnToken(userName, userId, res) {
-    jwt.sign({ userName, userId }, process.env.SECRET, async (err, token) => {
+function createAndReturnToken(userName, userId, isAdmin, res) {
+    jwt.sign({ userName, userId, isAdmin }, process.env.SECRET, async (err, token) => {
         if (err) {
             console.error(err);
             res.status(500).send('error creating user');

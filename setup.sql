@@ -11,6 +11,9 @@ CREATE TABLE `amirtours`.`users` (
   `isAdmin` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`));
 
+INSERT INTO `amirtours`.`users` (`firstName`, `lastName`, `userName`, `password`, `isAdmin`)
+VALUES ('amir', 'debi', 'admin', '1234', '1');
+
 CREATE TABLE `amirtours`.`vacations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(200) NOT NULL,

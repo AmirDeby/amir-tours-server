@@ -2,6 +2,8 @@ const db = require('../sql');
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const { addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
+const checkAdmin = require('../middleware/checkAdmin');
+
 
 router.get('/', async (req, res) => {
 
@@ -71,14 +73,14 @@ router.post('/:vacationId/unfollow', async (req, res) => {
 
 })
 
-router.post('/addvacation', async (req, res) => {
-    const { isAdmin } = req.user
+router.post('/', checkAdmin, async (req, res) => {
+
     const { description, destination, image, startDate, endDate, price } = req.body;
 
-    await db.execute(addVacation(), [description, destination, image, startDate, endDate, price]);
+    const [response] = await db.execute(addVacation(), [description, destination, image, startDate, endDate, price]);
+    const vacationId = response.insertId;
 
-    res.send('vacation added successfully');
+    res.send({ vacationId });
 })
-
 
 module.exports = router;

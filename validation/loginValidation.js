@@ -8,7 +8,7 @@ const loginSchema = Joi.object({
 function loginValidation(req, res, next) {
 
     const { error } = loginSchema.validate(req.body);
-    if (error) return res.send('login fail')
+    if (error) return res.status(400).send(error);
     next();
 }
 
