@@ -1,6 +1,11 @@
 const getVacations = () => {
     return ('SELECT * FROM amirtours.vacations');
 }
+
+const getUsers = () => {
+    return 'SELECT * FROM amirtours.users'
+}
+
 const getFollowedVacationIds = () => {
     return 'SELECT vacationId FROM amirtours.followers WHERE userId = ?'
 }
@@ -28,4 +33,4 @@ function addVacation() {
     return "INSERT INTO `amirtours`.`vacations` (`description`, `destination`, `image`, `startDate`, `endDate`, `price`) VALUES (?,?,?,?,?,?)"
 }
 
-module.exports = { addVacation, getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }
+module.exports = { getUsers, addVacation, getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }

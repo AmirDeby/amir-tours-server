@@ -1,37 +1,23 @@
 const db = require('../sql');
 const router = require('express').Router();
+const { getUsers } = require('../queries')
 
-const users = [{ id: '5', name: 'itzik' }, { id: '7', name: 'shlomo' }]
 
-router.get('/', (req, res) => {
-    // e.g. GET /users/
+router.get('/', async (req, res) => {
+
+    const [users] = await db.execute(getUsers());
+
+
     res.send(users);
 });
 
-router.get('/search', (req, res) => {
-    // e.g. GET /users/search?name=s
-    const { name } = req.query;
+router.get('/me', async (req, res) => {
 
-    const filteredUsers = users.filter(user => user.name.includes(name));
-    res.send(filteredUsers)
+    
+    
+    res.send(req.user)
+
+
 })
-
-router.get('/:id', (req, res) => {
-    // e.g. GET /users/7
-    const { id } = req.params;
-    const user = users.find(user => user.id === id);
-    res.send(user);
-});
-
-router.post('/', (req, res) => {
-    // e.g. POST /users with body {"name": "gidi"}
-    const { name } = req.body;
-    const user = {
-        name,
-        id: Date.now().toString(),
-    };
-    users.push(user);
-    res.send(user);
-});
 
 module.exports = router;

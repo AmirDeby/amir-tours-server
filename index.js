@@ -11,12 +11,14 @@ const authRouter = require('./routers/auth');
 
 const port = process.env.PORT;
 
+
 app.use(cors());
 app.use(express.json());
+
 app.use(expressJwt({ secret: process.env.SECRET }).unless({ path: ['/login', '/register'] }));
 
 
-// app.use('/users', userRouter);
+app.use('/users', userRouter);
 app.use('/vacations', vacationsRouter);
 app.use('/auth', authRouter)
 
