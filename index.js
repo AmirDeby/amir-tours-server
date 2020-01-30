@@ -15,7 +15,7 @@ const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
-app.use(expressJwt({ secret: process.env.SECRET }).unless({ path: ['/login', '/register'] }));
+app.use(expressJwt({ secret: process.env.SECRET }).unless({ path: ['/auth/login', '/auth/register'] }));
 
 
 app.use('/users', userRouter);

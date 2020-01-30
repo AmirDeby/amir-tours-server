@@ -19,7 +19,7 @@ router.post('/login', loginValidation, async (req, res) => {
         return;
     }
 
-    createAndReturnToken(user.userName, user.id, user.isAdmin ,res);
+    createAndReturnToken(user.userName, user.id, user.isAdmin, res);
 });
 
 
@@ -46,7 +46,8 @@ function createAndReturnToken(userName, userId, isAdmin, res) {
             res.status(500).send('error creating user');
             return;
         }
-        res.json({ message: `${userName}, Welcome to AmirTours`, token });
+
+        res.json({ message: `${userName}, Welcome to AmirTours`, token, userName, isAdmin });
     });
 }
 
