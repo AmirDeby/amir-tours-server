@@ -1,7 +1,7 @@
 const db = require('../sql');
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
-const { deleteVacationFollowers, deleteVacation , addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
+const { deleteVacationFollowers, deleteVacation, addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
 const checkAdmin = require('../middleware/checkAdmin');
 
 
@@ -90,12 +90,10 @@ router.delete('/:id', checkAdmin, async (req, res) => {
 
     const { id } = req.params;
 
-    
     await db.execute(deleteVacation(), [id]);
     await db.execute(deleteVacationFollowers(), [id]);
-    const [vacations] = await db.execute(getVacations());
 
-    res.send(vacations);
+    res.send({ id });
 })
 
 module.exports = router;
