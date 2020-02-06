@@ -1,9 +1,9 @@
 const db = require('../sql');
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
-const { deleteVacationFollowers, deleteVacation, addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
+const { updateVacation, deleteVacationFollowers, deleteVacation, addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
 const checkAdmin = require('../middleware/checkAdmin');
-
+const vacationFollowValidation = require('../validation/vacationFollowValidation');
 
 router.get('/', async (req, res) => {
 
@@ -28,10 +28,6 @@ router.get('/me', async (req, res) => {
     })
 
     res.send(vacationsWithFollowFlag)
-
-
-
-
 });
 
 router.post('/:vacationId/follow', async (req, res) => {
@@ -70,6 +66,17 @@ router.post('/:vacationId/unfollow', async (req, res) => {
     const { userId } = req.user;
     const { vacationId } = req.params;
 
+    const vacationSchema = Joi.object({
+        userId: Joi.number().required(),
+        vacationId: Joi.number().required()
+    })
+
+    const validation = vacationSchema.validate({ userId, vacationId });
+    if (validation.error) {
+        res.status(401).send(validation.error);
+        return
+    }
+
     await db.execute(unfollowVacation(), [vacationId, userId]);
 
     res.send('you unfollowed');
@@ -94,6 +101,16 @@ router.delete('/:id', checkAdmin, async (req, res) => {
     await db.execute(deleteVacationFollowers(), [id]);
 
     res.send({ id });
+})
+
+router.put('/:id', checkAdmin, async (req, res) => {
+
+    const { id } = req.params;
+    const { description, destination, image, startDate, endDate, price } = req.body
+
+    await db.execute(updateVacation(), [description, destination, image, startDate, endDate, price, id])
+
+    res.send('vacation update')
 })
 
 module.exports = router;

@@ -4,6 +4,10 @@ const getVacations = () => {
 on vacations.id = F.vacationId;`)
 }
 
+const updateVacation = () => {
+    return "UPDATE `amirtours`.`vacations` SET `description` = ?, `destination` = ?,`image` = ?, `startDate` = ?,`endDate` = ?, `price` = ? WHERE (`id` = ?)"
+}
+
 const getUsers = () => {
     return 'SELECT * FROM amirtours.users'
 }
@@ -41,4 +45,4 @@ function deleteVacation() {
 function deleteVacationFollowers() {
     return "DELETE FROM amirtours.followers WHERE vacationId = ?";
 }
-module.exports = { deleteVacation, deleteVacationFollowers, getUsers, addVacation, getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }
+module.exports = { updateVacation, deleteVacation, deleteVacationFollowers, getUsers, addVacation, getFollowedVacationIds, login, registration, checkIfUserExists, getVacations, followVacation, unfollowVacation }
