@@ -32,8 +32,3 @@ CREATE TABLE `amirtours`.`followers` (
 
 ALTER TABLE `amirtours`.`followers` 
 ADD UNIQUE INDEX `uniqueFollower` (`vacationId` ASC, `userId` ASC);
-
-
-UPDATE `amirtours`.`vacations` SET
- `description` = ?, `destination` = ?,`image` = ?, `startDate` = ?,`endDate` = ?, `price` = ?
-  WHERE (`id` = ?)

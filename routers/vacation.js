@@ -45,7 +45,6 @@ router.post('/:vacationId/follow', async (req, res) => {
         res.status(401).send(validation.error);
         return
     }
-
     try {
         await db.execute(followVacation(), [userId, vacationId])
         res.send('Vacation Followed');
@@ -86,6 +85,21 @@ router.post('/:vacationId/unfollow', async (req, res) => {
 router.post('/', checkAdmin, async (req, res) => {
 
     const { description, destination, image, startDate, endDate, price } = req.body;
+
+    const vacationSchema = Joi.object({
+        description: Joi.string().required(),
+        destination: Joi.string().required(),
+        image: Joi.string(),
+        startDate: Joi.string().required(),
+        endDate: Joi.string().required(),
+        price:Joi.number().required()
+    })
+
+    const validation = vacationSchema.validate({ description, destination, image, startDate, endDate, price });
+    if (validation.error) {
+        res.status(401).send(validation.error);
+        return
+    }
 
     const [response] = await db.execute(addVacation(), [description, destination, image, startDate, endDate, price]);
     const vacationId = response.insertId;
