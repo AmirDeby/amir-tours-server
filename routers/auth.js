@@ -22,7 +22,6 @@ router.post('/login', loginValidation, async (req, res) => {
     createAndReturnToken(user.userName, user.id, user.isAdmin, res);
 });
 
-
 router.post('/register', registerValidation, async (req, res) => {
 
     const { userName, firstName, lastName, password } = req.body;
@@ -33,9 +32,9 @@ router.post('/register', registerValidation, async (req, res) => {
         res.status(400).json({ message: "user exists" });
         return;
     }
-
     const [response] = await db.execute(registration(), [firstName, lastName, password, userName]);
     const userId = response.insertId;
+
     createAndReturnToken(userName, userId, false, res);
 });
 
@@ -46,10 +45,8 @@ function createAndReturnToken(userName, userId, isAdmin, res) {
             res.status(500).send('error creating user');
             return;
         }
-
         res.json({ message: `${userName}, Welcome to AmirTours`, token, userName, isAdmin });
     });
 }
-
 
 module.exports = router;

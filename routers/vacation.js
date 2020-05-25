@@ -3,7 +3,6 @@ const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const { updateVacation, deleteVacationFollowers, deleteVacation, addVacation, getVacations, followVacation, unfollowVacation, getFollowedVacationIds } = require('../queries');
 const checkAdmin = require('../middleware/checkAdmin');
-const vacationFollowValidation = require('../validation/vacationFollowValidation');
 
 router.get('/', async (req, res) => {
 
@@ -31,7 +30,6 @@ router.get('/me', async (req, res) => {
 });
 
 router.post('/:vacationId/follow', async (req, res) => {
-
     const { userId } = req.user;
     const { vacationId } = req.params;
 
@@ -39,7 +37,6 @@ router.post('/:vacationId/follow', async (req, res) => {
         userId: Joi.number().required(),
         vacationId: Joi.number().required()
     })
-
     const validation = vacationSchema.validate({ userId, vacationId });
     if (validation.error) {
         res.status(401).send(validation.error);
@@ -48,7 +45,6 @@ router.post('/:vacationId/follow', async (req, res) => {
     try {
         await db.execute(followVacation(), [userId, vacationId])
         res.send('Vacation Followed');
-
         // prevent duplicate follower from same user 
     } catch (e) {
         if (e.code === 'ER_DUP_ENTRY') {
@@ -58,7 +54,6 @@ router.post('/:vacationId/follow', async (req, res) => {
         }
     }
 })
-
 
 router.post('/:vacationId/unfollow', async (req, res) => {
 
